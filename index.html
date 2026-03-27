@@ -891,10 +891,7 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
             </tbody>
           </table>
         </div>
-          <div class="summary-bar" style="grid-template-columns:repeat(2,1fr);gap:10px;">
-            <div class="si"><div class="sl">Monthly Family Pension (Spouse)</div><div class="sv green" id="fs-monthly">—</div><div class="ss">PKR per month for life</div></div>
-            <div class="si"><div class="sl">Gross Family Pension Base</div><div class="sv gold" id="fs-gross">—</div><div class="ss">Before adhoc increases (75% of gross)</div></div>
-          </div>
+          <!-- Monthly Family Pension & Gross Base summary removed from printable form -->
           <div class="summary-bar" style="grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;">
             <div class="si"><div class="sl">Death Gratuity</div><div class="sv gold" id="fs-gratuity">—</div><div class="ss">Lump sum — one-time</div></div>
             <div class="si"><div class="sl">Financial Assistance</div><div class="sv" id="fs-fa" style="color:var(--teal);">—</div><div class="ss">Govt. of Sindh — one-time</div></div>
@@ -2163,53 +2160,37 @@ function buildHEIGrid(){
   `).join('');
 }
 
-// ── VIEWER COUNTER & DATA LOGGING (via Anthropic API persistent storage) ──
+// ── VIEWER COUNTER (localStorage — works on GitHub Pages) ──────────────────
 async function initVisitors(){
   try {
-    // Increment viewer count using shared storage
-    let count = 0;
-    const lastVisit = localStorage.getItem('hei_last_visit_v2');
     const today = new Date().toDateString();
-    const isNewVisit = (lastVisit !== today);
-
-    // Try to get current count from shared storage
-    try {
-      const getResp = await window.storage.get('viewer_count', true);
-      count = getResp ? (parseInt(getResp.value)||0) : 0;
-    } catch(e){ count = parseInt(localStorage.getItem('hei_viewer_count_cache')||'0'); }
-
-    if(isNewVisit){
+    const lastVisit = localStorage.getItem('hei_last_visit_v2');
+    let count = parseInt(localStorage.getItem('hei_viewer_total') || '0');
+    if(lastVisit !== today){
       count++;
+      localStorage.setItem('hei_viewer_total', count);
       localStorage.setItem('hei_last_visit_v2', today);
-      localStorage.setItem('hei_viewer_count_cache', count);
-      try { await window.storage.set('viewer_count', String(count), true); } catch(e){}
     }
-
     const formatted = count.toLocaleString('en-PK');
-    const vc = document.getElementById('visitor-count');
-    const sv = document.getElementById('stat-visitors');
-    const fv = document.getElementById('footer-visitors');
-    if(vc) vc.textContent = formatted;
-    if(sv) sv.textContent = formatted;
-    if(fv) fv.textContent = formatted;
-  } catch(e){
-    // Fallback to localStorage only
-    let count = parseInt(localStorage.getItem('hei_viewer_total')||'0');
-    const lastVisit = localStorage.getItem('hei_last_visit_v2');
-    const today = new Date().toDateString();
-    if(lastVisit !== today){ count++; localStorage.setItem('hei_viewer_total',count); localStorage.setItem('hei_last_visit_v2',today); }
-    const fmt = count.toLocaleString('en-PK');
-    ['visitor-count','stat-visitors','footer-visitors'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=fmt;});
-  }
+    ['visitor-count','stat-visitors','footer-visitors'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.textContent = formatted;
+    });
+  } catch(e){ /* silent */ }
 }
 
-// ── DATA LOGGING — saves every calculation to persistent storage for owner review ──
+// ── DATA LOGGING — saves every calculation to localStorage for export ───────
 async function logCalculation(type, inputs, outputs){
   try {
     const timestamp = new Date().toISOString();
-    const key = 'calc_log:' + timestamp.replace(/[:.]/g,'-') + ':' + type;
+    const key = 'calc_log_' + timestamp.replace(/[:.]/g,'-') + '_' + type;
     const record = JSON.stringify({ timestamp, type, inputs, outputs });
-    await window.storage.set(key, record, true);
+    // Store in localStorage (append to list)
+    const existing = JSON.parse(localStorage.getItem('hei_calc_logs') || '[]');
+    existing.push({ key, record });
+    // Keep last 500 records max
+    if(existing.length > 500) existing.splice(0, existing.length - 500);
+    localStorage.setItem('hei_calc_logs', JSON.stringify(existing));
   } catch(e){ /* silent fail */ }
 }
 
@@ -2240,20 +2221,15 @@ function lockAdminPanel(){
 
 async function exportLogsToExcel(){
   try {
-    const keyResult = await window.storage.list('calc_log:', true);
-    if(!keyResult || !keyResult.keys || keyResult.keys.length === 0){
-      alert('No calculation records found yet.'); return;
+    const stored = JSON.parse(localStorage.getItem('hei_calc_logs') || '[]');
+    if(stored.length === 0){
+      alert('No calculation records found yet.\n\nRecords are saved each time someone uses the Pension or Family Pension calculator on this device/browser.'); return;
     }
-    const records = [];
-    for(const key of keyResult.keys){
-      try {
-        const r = await window.storage.get(key, true);
-        if(r) records.push(JSON.parse(r.value));
-      } catch(e){}
-    }
-    if(records.length === 0){ alert('No records to export.'); return; }
+    const records = stored.map(entry => {
+      try { return JSON.parse(entry.record); } catch(e){ return null; }
+    }).filter(Boolean);
+    if(records.length === 0){ alert('No valid records to export.'); return; }
 
-    // Build CSV
     const pensionRows = records.filter(r=>r.type==='pension');
     const familyRows = records.filter(r=>r.type==='family');
 
