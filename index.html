@@ -1195,10 +1195,26 @@ Orderly Allow.   = PKR 25,000 (BPS 20–22 only)</div></div>
           <div style="font-weight:700;font-size:13px;color:var(--gold);margin-bottom:8px;">⚠ Important Note</div>
           <div style="font-size:12.5px;color:#7A5C00;line-height:1.6;">This portal provides <strong>estimated figures only</strong>. For official pension verification, settlement, or dispute resolution, please contact your HEI's Finance / Accounts section.</div>
         </div>
-        <div class="contact-info" style="margin-top:16px;background:#EBF2FF;border-color:#C5D8F0;">
-          <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:8px;">📊 Admin — Export Calculator Usage Data</div>
-          <div style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:12px;">Download all user inputs and generated outputs as a CSV file for review and record-keeping.</div>
-          <button class="btn btn-primary" onclick="exportLogsToExcel()" style="font-size:12.5px;">⬇ Download Usage Log (CSV)</button>
+        <div class="contact-info" style="margin-top:16px;background:#EBF2FF;border-color:#C5D8F0;" id="admin-panel-box">
+          <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:8px;">🔒 Admin Area</div>
+          <!-- LOGIN FORM (shown by default) -->
+          <div id="admin-login-form">
+            <div style="font-size:12.5px;color:var(--muted);margin-bottom:10px;">Enter admin password to access usage data.</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input type="password" id="admin-pwd-input" placeholder="Enter password" style="padding:7px 10px;border:1px solid #C5D8F0;border-radius:4px;font-size:12.5px;flex:1;min-width:160px;" onkeydown="if(event.key==='Enter')checkAdminPassword()"/>
+              <button class="btn btn-primary" onclick="checkAdminPassword()" style="font-size:12.5px;white-space:nowrap;">Unlock →</button>
+            </div>
+            <div id="admin-pwd-err" style="color:#C0392B;font-size:12px;margin-top:6px;display:none;">❌ Incorrect password. Please try again.</div>
+          </div>
+          <!-- EXPORT PANEL (hidden until unlocked) -->
+          <div id="admin-export-panel" style="display:none;">
+            <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:8px;">📊 Admin — Export Calculator Usage Data</div>
+            <div style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:12px;">Download all user inputs and generated outputs as a CSV file for review and record-keeping.</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="exportLogsToExcel()" style="font-size:12.5px;">⬇ Download Usage Log (CSV)</button>
+              <button onclick="lockAdminPanel()" style="padding:7px 14px;background:transparent;border:1px solid #C5D8F0;border-radius:4px;font-size:12px;cursor:pointer;color:var(--muted);">🔒 Lock</button>
+            </div>
+          </div>
         </div>
         <div class="contact-info" style="margin-top:16px;">
           <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:12px;">📬 Direct Contact</div>
@@ -1206,7 +1222,7 @@ Orderly Allow.   = PKR 25,000 (BPS 20–22 only)</div></div>
             <div class="ci-icon">✉️</div>
             <div>
               <div class="ci-label">Email</div>
-              <div class="ci-value"><a href="/cdn-cgi/l/email-protection#3d50544f135048555c50505c597d5c59505453135048584913585948134d56" style="color:var(--navy);text-decoration:none;"><span class="__cf_email__" data-cfemail="224f4b500c4f574a434f4f43466243464f4b4c0c4f5747560c4746570c5249">[email&#160;protected]</span></a></div>
+              <div class="ci-value"><a href="mailto:mir.muhammad@admin.muet.edu.pk" style="color:var(--navy);text-decoration:none;">mir.muhammad@admin.muet.edu.pk</a></div>
               <div class="ci-sub">Click to send email directly</div>
             </div>
           </div>
@@ -1270,7 +1286,7 @@ Orderly Allow.   = PKR 25,000 (BPS 20–22 only)</div></div>
       <div class="footer-col">
         <h4>Contact</h4>
         <ul>
-          <li>✉ <a href="/cdn-cgi/l/email-protection#f09d9982de9d8598919d9d9194b091949d999ede9d859584de959485de809b" style="color:rgba(255,255,255,0.65);text-decoration:none;" onmouseover="this.style.color='#E5A020'" onmouseout="this.style.color='rgba(255,255,255,0.65)'"><span class="__cf_email__" data-cfemail="731e1a015d1e061b121e1e12173312171e1a1d5d1e0616075d1617065d0318">[email&#160;protected]</span></a></li>
+          <li>✉ <a href="mailto:mir.muhammad@admin.muet.edu.pk" style="color:rgba(255,255,255,0.65);text-decoration:none;" onmouseover="this.style.color='#E5A020'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">mir.muhammad@admin.muet.edu.pk</a></li>
           <li onclick="showPage('contact')">Contact Form →</li>
         </ul>
       </div>
@@ -1288,7 +1304,7 @@ Orderly Allow.   = PKR 25,000 (BPS 20–22 only)</div></div>
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ── COMMUTATION FACTORS ──
 // Official Restoration Years Table — Qualifying Service Years Required
 // Source: Pension & Commutation under Revised Pay Scales
@@ -2196,6 +2212,31 @@ async function logCalculation(type, inputs, outputs){
     await window.storage.set(key, record, true);
   } catch(e){ /* silent fail */ }
 }
+
+// ── Admin Password Protection ──────────────────────────────────────────────
+const ADMIN_PASSWORD = 'HEI@Pension2026';   // ← change this to your own password
+
+function checkAdminPassword(){
+  const input = document.getElementById('admin-pwd-input').value;
+  const errDiv = document.getElementById('admin-pwd-err');
+  if(input === ADMIN_PASSWORD){
+    document.getElementById('admin-login-form').style.display = 'none';
+    document.getElementById('admin-export-panel').style.display = 'block';
+    errDiv.style.display = 'none';
+  } else {
+    errDiv.style.display = 'block';
+    document.getElementById('admin-pwd-input').value = '';
+    document.getElementById('admin-pwd-input').focus();
+  }
+}
+
+function lockAdminPanel(){
+  document.getElementById('admin-login-form').style.display = 'block';
+  document.getElementById('admin-export-panel').style.display = 'none';
+  document.getElementById('admin-pwd-input').value = '';
+  document.getElementById('admin-pwd-err').style.display = 'none';
+}
+// ───────────────────────────────────────────────────────────────────────────
 
 async function exportLogsToExcel(){
   try {
