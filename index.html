@@ -901,8 +901,10 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
             <div class="sh">Family Pension Calculation</div>
             <table class="rt">
               <tr><td class="d">Last Drawn Basic Pay</td><td class="a"></td><td class="m" id="fr-bp2">—</td></tr>
+              <tr><td class="d">Add: Increment <small id="fr-incr-note" style="color:#1B6B3A;"></small></td><td class="a"></td><td class="m" id="fr-incr">—</td></tr>
+              <tr class="total"><td class="d">Basic Pay for Pension (BFP)</td><td class="a"></td><td class="m" id="fr-bfp">—</td></tr>
               <tr><td class="d">Qualifying Service Years (capped at 30)</td><td class="a"></td><td class="m" id="fr-svc2">—</td></tr>
-              <tr class="total"><td class="d">Gross Pension <small style="color:var(--gold)">(BP × 7 × Service ÷ 300)</small></td><td class="a"></td><td class="m" id="fr-grosspension">—</td></tr>
+              <tr class="total"><td class="d">Gross Pension <small style="color:var(--gold)">(BFP × 7 × Service ÷ 300)</small></td><td class="a"></td><td class="m" id="fr-grosspension">—</td></tr>
               <tr><td class="d">Family Pension for Spouse <small style="color:var(--muted)">(75% of Gross Pension)</small></td><td class="a"></td><td class="m" id="fr-fpbase">—</td></tr>
             </table>
             <div class="sh">Monthly Family Pension Build-up (Adhoc Increases)</div>
@@ -1719,6 +1721,10 @@ function calcFamily(){
   set('fr-lwp',lwpLabel(lwpY,lwpM,lwpD));
   set('fr-svc',svcStr);set('fr-bp',bpStr);
   set('fr-bp2',bpStr);set('fr-svc2',svcStr);
+  set('fr-incr', fIncr>0 ? pk(fIncr) : 'PKR 0 (not applicable)');
+  set('fr-bfp', pk(bfpFamily));
+  const frIncrNote=document.getElementById('fr-incr-note');
+  if(frIncrNote) frIncrNote.textContent=fIncrApplied ? '✓ Auto-applied (DOE in 31 May–1 Dec window)' : '';
   set('fr-grosspension',grossStr);set('fr-fpbase',pk(fpBase));
   set('fs-monthly',pk(total));set('fs-gross',pk(f1));
   set('fa1a',pk(f1));set('fa1t',pk(f1));
@@ -2035,8 +2041,10 @@ function downloadPDF(elementId,prefix){
     body+=sh('Family Pension Calculation');
     body+=`<table style="width:100%;border-collapse:collapse;">
       ${row('Last Drawn Basic Pay',g('fr-bp2'),false,false)}
+      ${row('Add: Increment '+(g('fr-incr-note')||''),g('fr-incr'),false,false)}
+      ${row('Basic Pay for Pension (BFP)',g('fr-bfp'),true,false)}
       ${row('Qualifying Service Years (capped at 30)',g('fr-svc2'),false,true)}
-      ${row('Gross Pension (BP × 7 × Service ÷ 300)',g('fr-grosspension'),false,false)}
+      ${row('Gross Pension (BFP × 7 × Service ÷ 300)',g('fr-grosspension'),false,false)}
       ${row(g('fp-basis-label')||'Family Pension Base',g('fr-fpbase'),false,true)}
       ${row('Gross Family Pension',g('fr-fpgross'),true,false)}
     </table>`;
