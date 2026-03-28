@@ -266,13 +266,13 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   .trial-banner-hide{display:none!important;}
+  .notice-banner{display:none!important;}
   body>*:not(.page){display:none!important;}
   body.print-pension #page-pension{display:block!important;}
   body.print-family #page-family{display:block!important;}
   #page-pension .page-header,#page-pension .step-nav,#page-pension #p-step1,#page-pension #p-step2,#page-pension .btn-row,#page-pension .action-bar,
   #page-family .page-header,#page-family .step-nav,#page-family #f-step1,#page-family #f-step2,#page-family .btn-row,#page-family .action-bar{display:none!important;}
   #p-step3,#f-step3{display:block!important;}
-  /* Hide result tabs — only show active panel */
   .result-tabs{display:none!important;}
   .result-panel{display:none!important;}
   .result-panel.active{display:block!important;}
@@ -280,49 +280,35 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
   .page-content{padding:0!important;}
   /* Compact header */
-  .rh{padding:4px 8px!important;}
-  .rh h2{font-size:12px!important;}
-  .rh .rsub{font-size:9px!important;margin-top:1px!important;}
-  /* Compact info grid */
-  .info-grid{gap:0!important;}
-  .info-col{padding:3px 8px!important;}
-  .info-row{font-size:9px!important;padding:1px 0!important;min-height:0!important;}
-  .lbl{min-width:110px!important;}
-  /* Service calculation table */
-  #pr-service-table td,table[id^="fr-"] td{font-size:9px!important;padding:1px 5px!important;}
-  /* Compact summary bar */
-  .summary-bar{gap:2px!important;padding:3px 8px!important;margin:0!important;}
-  .si{padding:3px 5px!important;}
-  .sl{font-size:8px!important;margin-bottom:1px!important;}
-  .sv{font-size:12px!important;}
-  .ss{font-size:8px!important;}
-  /* Compact result body */
-  .result-body{padding:0 8px 3px!important;}
-  .sh{margin:4px 0 2px!important;font-size:9.5px!important;padding:2px 0 2px 7px!important;}
-  table.rt td{padding:1.5px 4px!important;font-size:9px!important;line-height:1.25!important;}
-  table.rt thead td{padding:2px 4px!important;font-size:8.5px!important;}
-  /* Compact disclaimer/footnote */
-  .disclaimer{margin:3px 8px 4px!important;font-size:8.5px!important;padding:3px 5px!important;line-height:1.35!important;}
-  /* Force single page - aggressive compaction */
+  .rh{padding:3px 6px!important;}
+  .rh h2{font-size:10px!important;}
+  .rh .rsub{font-size:8px!important;margin-top:0!important;}
+  /* Info grid — side by side, ultra compact */
+  .info-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:0!important;}
+  .info-col{padding:2px 6px!important;}
+  .info-row{font-size:8px!important;padding:0!important;min-height:0!important;line-height:1.3!important;}
+  .lbl{min-width:95px!important;font-size:8px!important;}
+  .val{font-size:8px!important;}
+  /* Service & Age calculation tables */
+  #pr-service-table td,#pr-age-table td,table[id^="fr-"] td{font-size:8px!important;padding:1px 4px!important;line-height:1.2!important;}
+  /* Summary bar — horizontal strip */
+  .summary-bar{gap:2px!important;padding:2px 4px!important;margin:2px 0!important;}
+  .si{padding:2px 5px!important;}
+  .sl{font-size:7px!important;margin-bottom:0!important;letter-spacing:0!important;}
+  .sv{font-size:11px!important;font-weight:800!important;}
+  .ss{font-size:7px!important;margin-top:0!important;}
+  /* Result body tables */
+  .result-body{padding:0 5px 1px!important;}
+  .sh{margin:2px 0 1px!important;font-size:8.5px!important;padding:1px 0 1px 5px!important;}
+  table.rt td{padding:1px 3px!important;font-size:8px!important;line-height:1.2!important;}
+  table.rt thead td{padding:1px 3px!important;font-size:7.5px!important;}
+  /* Disclaimer */
+  .disclaimer{margin:2px 5px 2px!important;font-size:7.5px!important;padding:2px 4px!important;line-height:1.3!important;}
+  /* Single page enforcement */
   html,body{height:auto!important;overflow:visible!important;}
   .result-wrap{page-break-inside:avoid;page-break-after:avoid;}
   @page{size:A4 portrait;margin:3mm 4mm;}
   @page:blank{display:none;}
-  /* Extra compaction for single page */
-  .info-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:0!important;}
-  .summary-bar{padding:2px 4px!important;margin:2px 0!important;gap:2px!important;}
-  .si{padding:2px 4px!important;}
-  .sv{font-size:11px!important;}
-  .sl{font-size:7.5px!important;}
-  .ss{font-size:7px!important;}
-  table.rt td{padding:1px 3px!important;font-size:8.5px!important;line-height:1.2!important;}
-  .sh{margin:2px 0 1px!important;font-size:9px!important;padding:1px 0 1px 6px!important;}
-  .result-body{padding:0 6px 2px!important;}
-  .rh{padding:3px 6px!important;}
-  .rh h2{font-size:11px!important;}
-  .info-row{font-size:8.5px!important;padding:0!important;min-height:0!important;}
-  .lbl{min-width:100px!important;font-size:8.5px!important;}
-  .val{font-size:8.5px!important;}
 }
 </style>
 </head>
@@ -470,14 +456,6 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
     </div>
   </div>
   <div class="page-content">
-    <div class="notice-banner" style="margin-bottom:20px;">
-      <div class="nb-icon">ℹ️</div>
-      <div>
-        <div class="nb-title">How to Use</div>
-        <div class="nb-text">Fill in all 3 steps. Increment is auto-applied from BPS table if DOR falls between 31 May – 1 December. All adhoc increases up to July 2025 are automatically included.</div>
-      </div>
-    </div>
-
     <div class="step-nav">
       <div class="stab active" id="ptab1"><span class="sn">01</span>Personal Info</div>
       <div class="stab" id="ptab2"><span class="sn">02</span>Pay Details</div>
@@ -646,6 +624,42 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
             </tbody>
           </table>
         </div>
+
+        <!-- AGE CALCULATION TABLE -->
+        <div style="padding:8px 20px 0;border-bottom:1px solid var(--border);">
+          <div style="font-family:'Source Serif 4',serif;font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;text-decoration:underline;">Age Calculation</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px;" id="pr-age-table">
+            <thead>
+              <tr>
+                <td style="padding:3px 8px;font-weight:700;text-decoration:underline;color:var(--text);width:55%;">Details</td>
+                <td style="padding:3px 8px;font-weight:700;text-decoration:underline;text-align:center;color:var(--text);width:15%;">Days</td>
+                <td style="padding:3px 8px;font-weight:700;text-decoration:underline;text-align:center;color:var(--text);width:15%;">Month</td>
+                <td style="padding:3px 8px;font-weight:700;text-decoration:underline;text-align:center;color:var(--text);width:15%;">Year</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:2px 8px;color:var(--text);">Date of Birth</td>
+                <td style="padding:2px 8px;text-align:center;" id="pr-dob-d">—</td>
+                <td style="padding:2px 8px;text-align:center;" id="pr-dob-m">—</td>
+                <td style="padding:2px 8px;text-align:center;" id="pr-dob-y">—</td>
+              </tr>
+              <tr style="background:#F8FAFC;">
+                <td style="padding:2px 8px;color:var(--text);">Date of Retirement (DOR)</td>
+                <td style="padding:2px 8px;text-align:center;" id="pr-dor-d2">—</td>
+                <td style="padding:2px 8px;text-align:center;" id="pr-dor-m2">—</td>
+                <td style="padding:2px 8px;text-align:center;" id="pr-dor-y2">—</td>
+              </tr>
+              <tr style="background:var(--gold-pale);font-weight:700;">
+                <td style="padding:3px 8px;color:var(--navy);">Age at Retirement</td>
+                <td style="padding:3px 8px;text-align:center;" id="pr-age-d">—</td>
+                <td style="padding:3px 8px;text-align:center;" id="pr-age-m">—</td>
+                <td style="padding:3px 8px;text-align:center;color:var(--gold);" id="pr-age-y">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <div class="summary-bar cols3" style="border:none;padding:0;gap:8px;margin:8px 0;">
           <div class="si" style="background:#EBF5FF;border:1.5px solid #C5D8F0;border-radius:6px;padding:10px 14px;">
             <div class="sl" style="font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px;">MONTHLY PENSION (FROM DOR)</div>
@@ -1576,6 +1590,13 @@ function calcPension(){
   set('pr-lwp-d',lwpDc);set('pr-lwp-m',lwpMc);set('pr-lwp-y',lwpYc);
   set('pr-ns-d',nsD);set('pr-ns-m',nsM);set('pr-ns-y',nsY);
   set('pr-nqs-y',nqsY);
+
+  // Fill age calculation table (Days/Month/Year — same style as service table)
+  const ageDetail = ryDetail(dob, dor);
+  const dobD=padZ(dob.getDate()), dobM=padZ(dob.getMonth()+1), dobY=dob.getFullYear();
+  set('pr-dob-d',dobD); set('pr-dob-m',dobM); set('pr-dob-y',dobY);
+  set('pr-dor-d2',dorD); set('pr-dor-m2',dorM); set('pr-dor-y2',dorY);
+  set('pr-age-d',padZ(ageDetail.days)); set('pr-age-m',padZ(ageDetail.months)); set('pr-age-y',ageDetail.years+' Years');
 
   document.getElementById('p-step2').classList.remove('active');
   document.getElementById('p-step3').classList.add('active');
