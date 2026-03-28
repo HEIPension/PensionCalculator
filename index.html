@@ -303,11 +303,26 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
   table.rt thead td{padding:2px 4px!important;font-size:8.5px!important;}
   /* Compact disclaimer/footnote */
   .disclaimer{margin:3px 8px 4px!important;font-size:8.5px!important;padding:3px 5px!important;line-height:1.35!important;}
-  /* Force single page */
+  /* Force single page - aggressive compaction */
   html,body{height:auto!important;overflow:visible!important;}
   .result-wrap{page-break-inside:avoid;page-break-after:avoid;}
-  @page{size:A4 portrait;margin:4mm 5mm;}
+  @page{size:A4 portrait;margin:3mm 4mm;}
   @page:blank{display:none;}
+  /* Extra compaction for single page */
+  .info-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:0!important;}
+  .summary-bar{padding:2px 4px!important;margin:2px 0!important;gap:2px!important;}
+  .si{padding:2px 4px!important;}
+  .sv{font-size:11px!important;}
+  .sl{font-size:7.5px!important;}
+  .ss{font-size:7px!important;}
+  table.rt td{padding:1px 3px!important;font-size:8.5px!important;line-height:1.2!important;}
+  .sh{margin:2px 0 1px!important;font-size:9px!important;padding:1px 0 1px 6px!important;}
+  .result-body{padding:0 6px 2px!important;}
+  .rh{padding:3px 6px!important;}
+  .rh h2{font-size:11px!important;}
+  .info-row{font-size:8.5px!important;padding:0!important;min-height:0!important;}
+  .lbl{min-width:100px!important;font-size:8.5px!important;}
+  .val{font-size:8.5px!important;}
 }
 </style>
 </head>
@@ -631,10 +646,22 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
             </tbody>
           </table>
         </div>
-        <div class="summary-bar cols3">
-          <div class="si"><div class="sl">Monthly Pension (from DOR)</div><div class="sv gold" id="ps-monthly">—</div><div class="ss">PKR per month</div></div>
-          <div class="si"><div class="sl">Commutation (Lump Sum)</div><div class="sv gold" id="ps-comm">—</div><div class="ss">One-time payment</div></div>
-          <div class="si"><div class="sl">Date of Pension Restoration</div><div class="sv" id="ps-rest" style="font-size:0.95rem;">—</div><div class="ss">Full 100% pension restored</div></div>
+        <div class="summary-bar cols3" style="border:none;padding:0;gap:8px;margin:8px 0;">
+          <div class="si" style="background:#EBF5FF;border:1.5px solid #C5D8F0;border-radius:6px;padding:10px 14px;">
+            <div class="sl" style="font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px;">MONTHLY PENSION (FROM DOR)</div>
+            <div class="sv" style="font-size:1.4rem;font-weight:800;color:var(--navy);" id="ps-monthly">—</div>
+            <div class="ss" style="font-size:9px;color:var(--muted);margin-top:2px;">PKR per month</div>
+          </div>
+          <div class="si" style="background:#FFF8E6;border:1.5px solid #E8C87A;border-radius:6px;padding:10px 14px;">
+            <div class="sl" style="font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px;">COMMUTATION (LUMP SUM)</div>
+            <div class="sv" style="font-size:1.4rem;font-weight:800;color:var(--gold);" id="ps-comm">—</div>
+            <div class="ss" style="font-size:9px;color:var(--muted);margin-top:2px;">One-time payment</div>
+          </div>
+          <div class="si" style="background:#F0FAF4;border:1.5px solid #A8D8B9;border-radius:6px;padding:10px 14px;">
+            <div class="sl" style="font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px;">DATE OF PENSION RESTORATION</div>
+            <div class="sv" style="font-size:1.1rem;font-weight:800;color:#1B6B3A;" id="ps-rest">—</div>
+            <div class="ss" style="font-size:9px;color:var(--muted);margin-top:2px;">Full 100% pension restored</div>
+          </div>
         </div>
         <div class="result-body">
           <div class="sh">Step 1: Basic Pay &amp; Gross Pension Calculation</div>
@@ -834,6 +861,7 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
               <div class="info-row"><span class="lbl">Date of Expiry</span><span class="val" id="fr-doe">—</span></div>
               <div class="info-row"><span class="lbl">Total Service</span><span class="val" id="fr-totalsvc">—</span></div>
               <div class="info-row"><span class="lbl">Less: Leave Without Pay (LWP)</span><span class="val" id="fr-lwp" style="color:var(--red);">—</span></div>
+              <div class="info-row"><span class="lbl">Age at Expiry</span><span class="val" id="fr-age">—</span></div>
               <div class="info-row"><span class="lbl">Qualifying Service</span><span class="val" id="fr-svc">—</span></div>
               <div class="info-row"><span class="lbl">Last Basic Pay</span><span class="val" id="fr-bp">—</span></div>
             </div>
@@ -1558,7 +1586,7 @@ function calcPension(){
 
   // Log calculation for data tracking
   logCalculation('pension',
-    {name,bps:'BPS-'+bps,hei:heiName,dob:fd(dob),doa:fd(doa),dor:fd(dor),service:svc+' yrs',basicPay:bp},
+    {name,bps:'BPS-'+bps,hei:heiName,dob:fd(dob),doa:fd(doa),dor:fd(dor),service:svc+' yrs',basicPay:bp,increment:incr,bfp:bfp},
     {grossPension:Math.round(gross),monthlyPension:t8,commutation:Math.round(ct),restorationDate:fd(rd)}
   );
 }
@@ -1719,6 +1747,8 @@ function calcFamily(){
   set('fr-doa',doaStr);set('fr-doe',doeStr);
   set('fr-totalsvc',ymdLabel(totalSvcDetail.years,totalSvcDetail.months,totalSvcDetail.days,'gross'));
   set('fr-lwp',lwpLabel(lwpY,lwpM,lwpD));
+  // Age at expiry
+  if(fDob&&!isNaN(fDob)){ set('fr-age', ry(fDob,doe)+' years'); } else { set('fr-age','—'); }
   set('fr-svc',svcStr);set('fr-bp',bpStr);
   set('fr-bp2',bpStr);set('fr-svc2',svcStr);
   set('fr-incr', fIncr>0 ? pk(fIncr) : 'PKR 0 (not applicable)');
@@ -1815,7 +1845,7 @@ function calcFamily(){
 
   // Log calculation for data tracking
   logCalculation('family',
-    {name,bps:'BPS-'+bps,hei:fHei,doa:doaStr,doe:doeStr,service:svc+' yrs',basicPay:bp},
+    {name,bps:'BPS-'+bps,hei:fHei,dob:fDob&&!isNaN(fDob)?fd(fDob):'—',doa:doaStr,doe:doeStr,service:svc+' yrs',basicPay:bp,increment:fIncr,bfp:bfpFamily},
     {grossPension:Math.round(grossPension),monthlyPension:total,gratuity:gratuityTotal,groupInsurance:giAmt,financialAssistance:faAmt}
   );
 }
@@ -2018,7 +2048,7 @@ function downloadPDF(elementId,prefix){
       </td>
       <td style="width:50%;padding:8px 12px;vertical-align:top;">
         <table style="width:100%;font-size:10px;">
-          ${[['Date of Appointment',g('fr-doa')],['Date of Expiry',g('fr-doe')],['Qualifying Service',g('fr-svc')],['Last Basic Pay',g('fr-bp')]]
+          ${[['Date of Appointment',g('fr-doa')],['Date of Expiry',g('fr-doe')],['Age at Expiry',g('fr-age')],['Qualifying Service',g('fr-svc')],['Last Basic Pay',g('fr-bp')]]
             .map(([l,v])=>`<tr><td style="color:${muted};padding:2px 0;">${l}</td><td style="font-weight:600;text-align:right;">${v}</td></tr>`).join('')}
         </table>
       </td>
@@ -2239,35 +2269,73 @@ async function exportLogsToExcel(){
     if(records.length === 0){ alert('No valid records to export.'); return; }
 
     const pensionRows = records.filter(r=>r.type==='pension');
-    const familyRows = records.filter(r=>r.type==='family');
+    const familyRows  = records.filter(r=>r.type==='family');
 
-    let csv = 'HEI Pension Portal — Calculation Log\n';
-    csv += 'Exported: '+new Date().toLocaleString('en-PK')+'\n\n';
-
-    csv += '=== RETIREMENT PENSION CALCULATIONS ===\n';
-    csv += 'Timestamp,Name,BPS,HEI,DOB,DOA,DOR,Qualifying Service,Basic Pay,Gross Pension,Net Monthly Pension,Commutation,Restoration Date\n';
-    pensionRows.forEach(r=>{
-      const i=r.inputs||{}; const o=r.outputs||{};
-      csv += [r.timestamp,i.name,i.bps,i.hei,i.dob,i.doa,i.dor,i.service,i.basicPay,o.grossPension,o.monthlyPension,o.commutation,o.restorationDate].map(v=>('"'+(v||''))+'"').join(',')+'\n';
+    // ── Load SheetJS from CDN then build Excel ──────────────────────────────
+    await new Promise((res, rej) => {
+      if(window.XLSX){ res(); return; }
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
     });
 
-    csv += '\n=== FAMILY PENSION CALCULATIONS ===\n';
-    csv += 'Timestamp,Deceased Name,BPS,HEI,DOA,DOE,Qualifying Service,Basic Pay,Gross Pension,Monthly Family Pension,Gratuity,Group Insurance,Financial Assistance\n';
-    familyRows.forEach(r=>{
-      const i=r.inputs||{}; const o=r.outputs||{};
-      csv += [r.timestamp,i.name,i.bps,i.hei,i.doa,i.doe,i.service,i.basicPay,o.grossPension,o.monthlyPension,o.gratuity,o.groupInsurance,o.financialAssistance].map(v=>('"'+(v||''))+'"').join(',')+'\n';
-    });
+    const wb = window.XLSX.utils.book_new();
 
-    // Download CSV
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'HEI_Pension_Portal_Logs_'+new Date().toISOString().slice(0,10)+'.csv';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    alert('✓ Export complete! '+records.length+' record(s) downloaded.');
+    // ── Sheet 1: Summary ────────────────────────────────────────────────────
+    const summaryData = [
+      ['HEI Pension Portal — Calculation Usage Report'],
+      ['Exported:', new Date().toLocaleString('en-PK')],
+      [''],
+      ['Category', 'Total Records'],
+      ['Retirement Pension Calculations', pensionRows.length],
+      ['Family Pension Calculations', familyRows.length],
+      ['TOTAL', records.length],
+    ];
+    const ws0 = window.XLSX.utils.aoa_to_sheet(summaryData);
+    ws0['!cols'] = [{wch:42},{wch:28}];
+    window.XLSX.utils.book_append_sheet(wb, ws0, 'Summary');
+
+    // ── Sheet 2: Retirement Pension ─────────────────────────────────────────
+    const pH = ['#','Timestamp','Name','BPS','HEI','Date of Birth','Date of Appointment',
+      'Date of Retirement','Qualifying Service','Basic Pay (PKR)','Increment (PKR)','BFP (PKR)',
+      'Gross Pension (PKR)','Net Monthly Pension (PKR)','Commutation (PKR)','Restoration Date'];
+    const pRows = pensionRows.map((r,i)=>{
+      const inp=r.inputs||{}; const out=r.outputs||{};
+      return [i+1, r.timestamp||'', inp.name||'', inp.bps||'', inp.hei||'',
+        inp.dob||'', inp.doa||'', inp.dor||'', inp.service||'',
+        inp.basicPay||'', inp.increment||0, inp.bfp||'',
+        out.grossPension||'', out.monthlyPension||'',
+        out.commutation||'', out.restorationDate||''];
+    });
+    const ws1 = window.XLSX.utils.aoa_to_sheet([pH, ...pRows]);
+    ws1['!cols'] = [4,20,22,8,34,14,18,16,18,14,12,14,16,18,16,18].map(w=>({wch:w}));
+    window.XLSX.utils.book_append_sheet(wb, ws1, 'Retirement Pension');
+
+    // ── Sheet 3: Family Pension ─────────────────────────────────────────────
+    const fH = ['#','Timestamp','Deceased Name','BPS','HEI','Date of Birth',
+      'Date of Appointment','Date of Expiry','Qualifying Service','Basic Pay (PKR)','Increment (PKR)','BFP (PKR)',
+      'Gross Pension (PKR)','Monthly Family Pension (PKR)',
+      'Death Gratuity (PKR)','Group Insurance (PKR)','Financial Assistance (PKR)'];
+    const fRows = familyRows.map((r,i)=>{
+      const inp=r.inputs||{}; const out=r.outputs||{};
+      return [i+1, r.timestamp||'', inp.name||'', inp.bps||'', inp.hei||'',
+        inp.dob||'', inp.doa||'', inp.doe||'', inp.service||'',
+        inp.basicPay||'', inp.increment||0, inp.bfp||'',
+        out.grossPension||'', out.monthlyPension||'',
+        out.gratuity||'', out.groupInsurance||'', out.financialAssistance||''];
+    });
+    const ws2 = window.XLSX.utils.aoa_to_sheet([fH, ...fRows]);
+    ws2['!cols'] = [4,20,22,8,34,14,18,14,18,14,12,14,16,20,16,16,20].map(w=>({wch:w}));
+    window.XLSX.utils.book_append_sheet(wb, ws2, 'Family Pension');
+
+    // Download .xlsx
+    const fname = 'HEI_Pension_Logs_'+new Date().toISOString().slice(0,10)+'.xlsx';
+    window.XLSX.writeFile(wb, fname);
+    alert('\u2713 Excel export complete!\n\u2022 Retirement Pension: '+pensionRows.length+' record(s)\n\u2022 Family Pension: '+familyRows.length+' record(s)\n\nFile: '+fname);
   } catch(e){ alert('Export failed: '+e.message); }
 }
+
 
 // ── UPDATE HEI IN RESULT ──
 function updateHEI(){
@@ -2293,6 +2361,10 @@ function submitContact(){
   document.getElementById('c-msg').value = '';
 }
 
+// ── INIT ON PAGE LOAD ────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  initVisitors();
+});
 </script>
 </body>
 </html>
