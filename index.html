@@ -685,7 +685,9 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
             <tr><td class="d">Senior Post Allowance <small style="color:var(--muted)">(BPS-20: 1,250 | BPS-21: 1,350 | BPS-22: 1,750)</small></td><td class="a"></td><td class="m" id="pr-spa">—</td></tr>
             <tr class="total"><td class="d">Basic for Pension (BFP)</td><td class="a"></td><td class="m" id="pr-bfp">—</td></tr>
             <tr><td class="d">Gross Pension <small style="color:var(--muted)">(BFP × 7 × Service Years ÷ 300)</small></td><td class="a"></td><td class="m" id="pr-gross">—</td></tr>
-            <tr><td class="d">65% Net Pension</td><td class="a"></td><td class="m" id="pr-g65">—</td></tr>
+            <tr><td class="d">65% Net Pension <small style="color:var(--muted)">(65% of Gross)</small></td><td class="a"></td><td class="m" id="pr-g65">—</td></tr>
+            <tr id="pr-min-row" style="display:none;background:#FFF3E0;"><td class="d" style="color:#E65100;font-weight:600;">As per Government Rule — Minimum Pension</td><td class="a"></td><td class="m" id="pr-min-val" style="color:#E65100;font-weight:700;">PKR 15,000</td></tr>
+            <tr id="pr-p1-row" class="total"><td class="d">Net Pension (Base for Adhoc Build-up)</td><td class="a"></td><td class="m" id="pr-p1">—</td></tr>
             <tr><td class="d">35% Commuted portion of Gross Pension</td><td class="a"></td><td class="m" id="pr-c35">—</td></tr>
           </table>
           <div class="sh">Step 2: Commutation Calculation</div>
@@ -700,7 +702,7 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
           <table class="rt">
             <thead><tr style="background:#F0F3F8;"><td class="d" style="font-weight:600;font-size:11.5px;color:var(--muted);">Description</td><td class="a" style="font-weight:600;font-size:11.5px;color:var(--muted);">Increase</td><td class="m" style="font-weight:600;font-size:11.5px;color:var(--muted);">Running Total</td></tr></thead>
             <tbody>
-              <tr><td class="d">65% Net Pension (effective from DOR)</td><td class="a" id="pa1a">—</td><td class="m" id="pa1t">—</td></tr>
+              <tr><td class="d" id="pa1-label">65% Net Pension (effective from DOR)</td><td class="a" id="pa1a">—</td><td class="m" id="pa1t">—</td></tr>
               <tr class="alt"><td class="d">63.5% Adhoc of 01-07-2022</td><td class="a" id="pa2a">—</td><td class="m" id="pa2t">—</td></tr>
               <tr><td class="d">17.5% Adhoc of 01-07-2023</td><td class="a" id="pa3a">—</td><td class="m" id="pa3t">—</td></tr>
               <tr class="alt"><td class="d">15% Adhoc of 01-07-2024</td><td class="a" id="pa4a">—</td><td class="m" id="pa4t">—</td></tr>
@@ -948,12 +950,14 @@ footer{background:var(--navy3);color:rgba(255,255,255,0.65);padding:32px 24px 20
               <tr><td class="d">Qualifying Service Years (capped at 30)</td><td class="a"></td><td class="m" id="fr-svc2">—</td></tr>
               <tr class="total"><td class="d">Gross Pension <small style="color:var(--gold)">(BFP × 7 × Service ÷ 300)</small></td><td class="a"></td><td class="m" id="fr-grosspension">—</td></tr>
               <tr><td class="d">Family Pension for Spouse <small style="color:var(--muted)">(75% of Gross Pension)</small></td><td class="a"></td><td class="m" id="fr-fpbase">—</td></tr>
+              <tr id="fr-min-row" style="display:none;background:#FFF3E0;"><td class="d" style="color:#E65100;font-weight:600;">As per Government Rule — Minimum Family Pension</td><td class="a"></td><td class="m" id="fr-min-val" style="color:#E65100;font-weight:700;">PKR 11,250</td></tr>
+              <tr id="fr-f1-row" class="total"><td class="d">Family Pension Base (used for Adhoc Build-up)</td><td class="a"></td><td class="m" id="fr-f1">—</td></tr>
             </table>
             <div class="sh">Monthly Family Pension Build-up (Adhoc Increases)</div>
             <table class="rt">
               <thead><tr style="background:#F0F3F8;"><td class="d" style="font-weight:600;font-size:11.5px;color:var(--muted);">Description</td><td class="a" style="font-weight:600;font-size:11.5px;color:var(--muted);">Increase</td><td class="m" style="font-weight:600;font-size:11.5px;color:var(--muted);">Running Total</td></tr></thead>
               <tbody>
-                <tr><td class="d">Gross Family Pension (base — 75%)</td><td class="a" id="fa1a">—</td><td class="m" id="fa1t">—</td></tr>
+                <tr><td class="d" id="fa1-label">Gross Family Pension (base — 75%)</td><td class="a" id="fa1a">—</td><td class="m" id="fa1t">—</td></tr>
                 <tr class="alt"><td class="d">63.5% Adhoc of 01-07-2022</td><td class="a" id="fa2a">—</td><td class="m" id="fa2t">—</td></tr>
                 <tr><td class="d">17.5% Adhoc of 01-07-2023</td><td class="a" id="fa3a">—</td><td class="m" id="fa3t">—</td></tr>
                 <tr class="alt"><td class="d">15% Adhoc of 01-07-2024</td><td class="a" id="fa4a">—</td><td class="m" id="fa4t">—</td></tr>
@@ -1535,7 +1539,9 @@ function calcPension(){
   rd.setDate(rd.getDate()-1);
 
   // Adhoc build-up
-  const p1=g65;
+  // Apply minimum pension rule: 65% net pension must be at least Rs.15,000/-
+  const MIN_NET_PENSION = 15000;
+  const p1=Math.max(g65, MIN_NET_PENSION);
   const p2=Math.round(p1*0.635); const t2=p1+p2;
   const p3=Math.round(t2*0.175); const t3=t2+p3;
   const p4=Math.round(t3*0.15);  const t4=t3+p4;
@@ -1559,7 +1565,26 @@ function calcPension(){
   set('ps-monthly',pk(t8));set('ps-comm',pk(ct));set('ps-rest',fd(rd));
   set('pr-bp',pk(bp));set('pr-incr',incr>0?pk(incr):'PKR 0 (not applicable)');set('pr-spa',pk(spa));
   const incrNote=document.getElementById('pr-incr-note');if(incrNote)incrNote.textContent=incr>0?'✓ Auto-applied':'';
-  set('pr-bfp',pk(bfp));set('pr-gross',pk(gross));set('pr-g65',pk(g65));set('pr-c35',pk(c35));
+  set('pr-bfp',pk(bfp));set('pr-gross',pk(gross));
+  // Show actual calculated g65, then note if minimum was applied
+  set('pr-g65', pk(g65));  // Always show actual calculated 65% Net Pension
+  // Show/hide Government Minimum Pension row
+  const prMinRow = document.getElementById('pr-min-row');
+  const prP1Row  = document.getElementById('pr-p1-row');
+  if(g65 < MIN_NET_PENSION){
+    if(prMinRow) prMinRow.style.display = '';
+    if(prP1Row)  prP1Row.style.display  = '';
+    set('pr-p1', pk(p1));  // = PKR 15,000
+    const pa1Lbl = document.getElementById('pa1-label');
+    if(pa1Lbl) pa1Lbl.textContent = 'Net Pension — Govt. Minimum (effective from DOR)';
+  } else {
+    if(prMinRow) prMinRow.style.display = 'none';
+    if(prP1Row)  prP1Row.style.display  = 'none';
+    set('pr-p1', pk(p1));
+    const pa1Lbl = document.getElementById('pa1-label');
+    if(pa1Lbl) pa1Lbl.textContent = '65% Net Pension (effective from DOR)';
+  }
+  set('pr-c35',pk(c35));
   set('pr-age2',age+' years');set('pr-cf',factor.toFixed(4)+' (Restore: '+restoreYears+' yrs)');set('pr-ac',pk(ac));set('pr-comm',pk(ct));set('pr-rd',fd(rd));
   const rdNote=document.getElementById('pr-rd-note');if(rdNote)rdNote.textContent='('+restoreYears+' years from table | age '+age+')';
   set('pa1a',pk(p1));set('pa1t',pk(p1));
@@ -1706,7 +1731,9 @@ function calcFamily(){
 
   // Adhoc increases on 75% base
   const medRate=(bps>=1&&bps<=15)?0.25:0.20;
-  const f1=Math.round(fpGross);
+  // Apply minimum family pension rule: base must be at least Rs.11,250/-
+  const MIN_FAMILY_PENSION = 11250;
+  const f1=Math.max(Math.round(fpGross), MIN_FAMILY_PENSION);
   const f2=Math.round(f1*0.635);  const ft2=f1+f2;
   const f3=Math.round(ft2*0.175); const ft3=ft2+f3;
   const f4=Math.round(ft3*0.15);  const ft4=ft3+f4;
@@ -1776,7 +1803,24 @@ function calcFamily(){
   set('fr-bfp', pk(bfpFamily));
   const frIncrNote=document.getElementById('fr-incr-note');
   if(frIncrNote) frIncrNote.textContent=fIncrApplied ? '✓ Auto-applied (DOE in 31 May–1 Dec window)' : '';
-  set('fr-grosspension',grossStr);set('fr-fpbase',pk(fpBase));
+  set('fr-grosspension',grossStr);
+  set('fr-fpbase', pk(fpBase));  // Always show actual calculated 75% family pension
+  // Show/hide Government Minimum Family Pension row
+  const frMinRow = document.getElementById('fr-min-row');
+  const frF1Row  = document.getElementById('fr-f1-row');
+  if(fpBase < MIN_FAMILY_PENSION){
+    if(frMinRow) frMinRow.style.display = '';
+    if(frF1Row)  frF1Row.style.display  = '';
+    set('fr-f1', pk(f1));  // = PKR 11,250
+    const fa1Lbl = document.getElementById('fa1-label');
+    if(fa1Lbl) fa1Lbl.textContent = 'Family Pension — Govt. Minimum (base)';
+  } else {
+    if(frMinRow) frMinRow.style.display = 'none';
+    if(frF1Row)  frF1Row.style.display  = 'none';
+    set('fr-f1', pk(f1));
+    const fa1Lbl = document.getElementById('fa1-label');
+    if(fa1Lbl) fa1Lbl.textContent = 'Gross Family Pension (base — 75%)';
+  }
   set('fs-monthly',pk(total));set('fs-gross',pk(f1));
   set('fa1a',pk(f1));set('fa1t',pk(f1));
   set('fa2a',pk(f2));set('fa2t',pk(ft2));
@@ -2222,13 +2266,13 @@ function buildHEIGrid(){
 // ── VIEWER COUNTER (localStorage — works on GitHub Pages) ──────────────────
 async function initVisitors(){
   try {
-    const today = new Date().toDateString();
-    const lastVisit = localStorage.getItem('hei_last_visit_v2');
+    // Count every new browser session (sessionStorage resets on tab/window close)
+    const sessionKey = 'hei_session_counted';
     let count = parseInt(localStorage.getItem('hei_viewer_total') || '0');
-    if(lastVisit !== today){
+    if(!sessionStorage.getItem(sessionKey)){
       count++;
       localStorage.setItem('hei_viewer_total', count);
-      localStorage.setItem('hei_last_visit_v2', today);
+      sessionStorage.setItem(sessionKey, '1');
     }
     const formatted = count.toLocaleString('en-PK');
     ['visitor-count','stat-visitors','footer-visitors'].forEach(id=>{
@@ -2373,8 +2417,19 @@ function syncHEIField(){
 // ── CONTACT FORM ──
 function submitContact(){
   const name = document.getElementById('c-name').value.trim();
+  const emailVal = (document.getElementById('c-email')?document.getElementById('c-email').value.trim():'');
   const msg = document.getElementById('c-msg').value.trim();
   if(!name || !msg){ alert('Please fill in your name and message before submitting.'); return; }
+  // Build mailto link and open email client
+  const to = 'mir.muhammad@admin.muet.edu.pk';
+  const subject = encodeURIComponent('HEI Pension Portal — Feedback / Query from ' + name);
+  const body = encodeURIComponent(
+    'Name: ' + name + '\n' +
+    (emailVal ? 'Reply Email: ' + emailVal + '\n' : '') +
+    '\nMessage:\n' + msg + '\n\n---\nSent from HEI Pension Portal'
+  );
+  window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
+  // Show success message
   const success = document.getElementById('c-success');
   if(success){ success.style.display = 'block'; }
   document.getElementById('c-name').value = '';
