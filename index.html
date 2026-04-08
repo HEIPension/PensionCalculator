@@ -2435,4 +2435,10 @@ function submitContact(){
   // Show success message
   const success = document.getElementById('c-success');
   if(success){ success.style.display = 'block'; }
-  document.getElementById('c-name').value = 
+  document.getElementById('c-name').value = '';
+  if(document.getElementById('c-email')) document.getElementById('c-email').value = '';
+  document.getElementById('c-msg').value = '';
+}
+</script>
+</body>
+</html>
